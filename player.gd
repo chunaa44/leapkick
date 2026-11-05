@@ -15,6 +15,12 @@ const BODY_SIZE = Vector2(40, 80)
 const FOOT_SIZE = Vector2(40, 40)
 const FOOT_OFFSET = Vector2(30, 30)
 
+# turn this off to hide the red foot rectangle
+const SHOW_HITBOXES = true
+
+# the recovery animation is 4 frames at 10 fps = 0.4 seconds
+const RECOVERY_ANIM_TIME = 0.4
+
 # these are filled in by set_character()
 var char_name = ""
 var body_color = Color(1, 1, 1)
@@ -31,6 +37,8 @@ var recovery_left = 0.0
 var start_position = Vector2.ZERO
 var start_facing = 1
 var foot_visual = null
+
+@onready var sprite = $Sprite
 
 func _ready():
 	start_position = global_position
@@ -80,11 +88,15 @@ func set_character(id):
 		dive_y = 800.0
 		recovery_time = 0.2
 
-	# player 2 is a darker shade so mirror matches are readable
-	if player_id == 1:
-		$ColorRect.color = body_color
-	else:
-		$ColorRect.color = body_color.darkened(0.35)
+	# all characters share one sprite, so a light tint tells them apart
+	# (mixed halfway with white so the art doesn't get too dark)
+	var tint = body_color.lerp(Color(1, 1, 1), 0.5)
+	if player_id == 2:
+		# player 2 is darker so mirror matches are readable
+		tint = tint.darkened(0.3)
+	sprite.self_modulate = tint
+
+	sprite.play("idle")
 
 func update_foot_visual_position():
 	foot_visual.position = Vector2(FOOT_OFFSET.x * facing, FOOT_OFFSET.y) - FOOT_SIZE / 2
@@ -106,6 +118,32 @@ func face_towards(other_x):
 	elif other_x < global_position.x:
 		facing = -1
 	update_foot_visual_position()
+
+func update_animation():
+	var anim = "idle"
+	if is_diving:
+		anim = "dive"
+	elif is_on_floor() == false:
+		if velocity.y < 0:
+			anim = "rise"
+		else:
+			anim = "fall"
+	elif recovery_left > 0:
+		anim = "recovery"
+
+	# only restart the animation when the state actually changes
+	if sprite.animation != anim:
+		sprite.play(anim)
+
+		# stretch or squash the recovery animation to match this
+		# character's recovery time
+		if anim == "recovery":
+			sprite.speed_scale = RECOVERY_ANIM_TIME / recovery_time
+		else:
+			sprite.speed_scale = 1.0
+
+	# art is drawn facing right, so flip it when facing left
+	sprite.flip_h = (facing == -1)
 
 func _physics_process(delta):
 	# nobody moves between the kill and the next round
@@ -145,13 +183,9 @@ func _physics_process(delta):
 
 	global_position.x = clamp(global_position.x, LEFT_LIMIT, RIGHT_LIMIT)
 
-	foot_visual.visible = is_diving
+	foot_visual.visible = is_diving and SHOW_HITBOXES
 
-	# gray tint while stuck in recovery
-	if recovery_left > 0:
-		$ColorRect.modulate = Color(0.5, 0.5, 0.5)
-	else:
-		$ColorRect.modulate = Color(1, 1, 1)
+	update_animation()
 
 func reset():
 	global_position = start_position
@@ -162,3 +196,4 @@ func reset():
 	facing = start_facing
 	update_foot_visual_position()
 	foot_visual.visible = false
+	update_animation()
