@@ -10,14 +10,6 @@ const GRAVITY = 1800.0
 const LEFT_LIMIT = 60.0
 const RIGHT_LIMIT = 1220.0
 
-# hit rectangles (body size must match the collision shape)
-const BODY_SIZE = Vector2(40, 80)
-const FOOT_SIZE = Vector2(40, 40)
-const FOOT_OFFSET = Vector2(30, 30)
-
-# turn this off to hide the red foot rectangle
-const SHOW_HITBOXES = true
-
 # the recovery animation is 4 frames at 10 fps = 0.4 seconds
 const RECOVERY_ANIM_TIME = 0.4
 
@@ -36,21 +28,22 @@ var frozen = false
 var recovery_left = 0.0
 var start_position = Vector2.ZERO
 var start_facing = 1
-var foot_visual = null
+var foot_base_x = 0.0
 
 @onready var sprite = $Sprite
+@onready var body_shape = $CollisionShape2D
+@onready var foot_box = $FootBox
+@onready var foot_shape = $FootBox/CollisionShape2D
+@onready var hit_burst = $HitBurst
 
 func _ready():
 	start_position = global_position
 	start_facing = facing
 
-	# red rectangle that shows the foot hit area while diving
-	foot_visual = ColorRect.new()
-	foot_visual.color = Color(1, 0, 0, 0.7)
-	foot_visual.size = FOOT_SIZE
-	foot_visual.visible = false
-	add_child(foot_visual)
-	update_foot_visual_position()
+	# the foot box is placed in the editor for the right-facing pose,
+	# we only mirror it when facing left
+	foot_base_x = foot_box.position.x
+	update_foot_side()
 
 	set_character(character)
 
@@ -96,17 +89,20 @@ func set_character(id):
 		tint = tint.darkened(0.3)
 	sprite.self_modulate = tint
 
+	hit_burst.color = body_color
+
 	sprite.play("idle")
 
-func update_foot_visual_position():
-	foot_visual.position = Vector2(FOOT_OFFSET.x * facing, FOOT_OFFSET.y) - FOOT_SIZE / 2
+func update_foot_side():
+	foot_box.position.x = foot_base_x * facing
 
 func body_rect():
-	return Rect2(global_position - BODY_SIZE / 2, BODY_SIZE)
+	var size = body_shape.shape.size
+	return Rect2(body_shape.global_position - size / 2, size)
 
 func foot_rect():
-	var center = global_position + Vector2(FOOT_OFFSET.x * facing, FOOT_OFFSET.y)
-	return Rect2(center - FOOT_SIZE / 2, FOOT_SIZE)
+	var size = foot_shape.shape.size
+	return Rect2(foot_shape.global_position - size / 2, size)
 
 func face_towards(other_x):
 	# you can only turn around while standing on the ground and free to act
@@ -117,7 +113,7 @@ func face_towards(other_x):
 		facing = 1
 	elif other_x < global_position.x:
 		facing = -1
-	update_foot_visual_position()
+	update_foot_side()
 
 func update_animation():
 	var anim = "idle"
@@ -183,8 +179,6 @@ func _physics_process(delta):
 
 	global_position.x = clamp(global_position.x, LEFT_LIMIT, RIGHT_LIMIT)
 
-	foot_visual.visible = is_diving and SHOW_HITBOXES
-
 	update_animation()
 
 func reset():
@@ -194,6 +188,5 @@ func reset():
 	frozen = false
 	recovery_left = 0.0
 	facing = start_facing
-	update_foot_visual_position()
-	foot_visual.visible = false
+	update_foot_side()
 	update_animation()

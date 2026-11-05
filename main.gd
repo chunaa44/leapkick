@@ -5,11 +5,27 @@ const WIN_SCORE = 5
 var score1 = 0
 var score2 = 0
 var round_active = true
+var shake = 0.0
+
+@onready var camera = $Camera2D
+@onready var p1_name = %P1Name
+@onready var p1_pips = %P1Pips
+@onready var p2_name = %P2Name
+@onready var p2_pips = %P2Pips
+@onready var message_label = %MessageLabel
+@onready var win_screen = %WinScreen
+@onready var winner_label = %WinnerLabel
+@onready var rematch_button = %RematchButton
 
 func _ready():
 	# run after the players have moved this frame
 	process_physics_priority = 1
 	update_score("")
+
+func _process(delta):
+	# shake fades out on its own
+	shake = move_toward(shake, 0.0, 60.0 * delta)
+	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake
 
 func _input(event):
 	# pick characters between rounds: 1/2/3 for player 1, 7/8/9 for player 2
@@ -79,21 +95,72 @@ func end_round(p1_was_hit, p2_was_hit):
 
 	update_score(message)
 
-	if game_over:
-		await get_tree().create_timer(3.0).timeout
-		score1 = 0
-		score2 = 0
-	else:
-		await get_tree().create_timer(1.0).timeout
+	# effects run alongside the timers below
+	play_hit_effects(p1_was_hit, p2_was_hit, game_over)
 
-	start_new_round()
+	# the last "true" makes this timer ignore the slow-mo
+	await get_tree().create_timer(1.0, true, false, true).timeout
+
+	if game_over:
+		# stay frozen and let the player choose
+		winner_label.text = message
+		win_screen.visible = true
+		rematch_button.grab_focus()
+	else:
+		start_new_round()
+func play_hit_effects(p1_was_hit, p2_was_hit, big):
+	# screen shake, bigger on the final kill
+	shake = 24.0 if big else 14.0
+
+	if p1_was_hit:
+		hit_flash($Player1)
+	if p2_was_hit:
+		hit_flash($Player2)
+
+	# hit-stop: a very short slow-motion freeze that sells the impact
+	Engine.time_scale = 0.1
+	await get_tree().create_timer(0.15, true, false, true).timeout
+	Engine.time_scale = 1.0
+
+	# flash is over, back to normal color
+	$Player1.sprite.modulate = Color.WHITE
+	$Player2.sprite.modulate = Color.WHITE
+
+func hit_flash(player):
+	player.sprite.modulate = Color(4, 4, 4)
+	player.hit_burst.restart()
 
 func start_new_round():
+	Engine.time_scale = 1.0
+	$Player1.sprite.modulate = Color.WHITE
+	$Player2.sprite.modulate = Color.WHITE
 	$Player1.reset()
 	$Player2.reset()
 	round_active = true
 	update_score("")
 
 func update_score(message):
-	var names = $Player1.char_name + "  " + str(score1) + " - " + str(score2) + "  " + $Player2.char_name
-	$ScoreLabel.text = names + "\n" + message
+	p1_name.text = $Player1.char_name
+	p2_name.text = $Player2.char_name
+	p1_pips.text = make_pips(score1)
+	p2_pips.text = make_pips(score2)
+	message_label.text = message
+
+	# name color matches the character's color
+	p1_name.add_theme_color_override("font_color", $Player1.body_color)
+	p2_name.add_theme_color_override("font_color", $Player2.body_color)
+
+func make_pips(score):
+	# filled circles for points won, empty ones for points left
+	return "●".repeat(score) + "○".repeat(WIN_SCORE - score)
+
+
+func _on_rematch_button_pressed():
+	score1 = 0
+	score2 = 0
+	win_screen.visible = false
+	start_new_round()
+
+func _on_menu_button_pressed():
+	Engine.time_scale = 1.0
+	get_tree().change_scene_to_file("res://main_menu.tscn")

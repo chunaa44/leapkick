@@ -48,6 +48,28 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kek77"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_272bh"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.14117648, 0.16078432, 0.2627451, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.38039216, 0.41960785, 0.6, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+expand_margin_left = 14.0
+expand_margin_top = 14.0
+expand_margin_right = 14.0
+expand_margin_bottom = 14.0
+
 [resource]
 Button/colors/font_color = Color(0, 0, 0, 1)
 Button/colors/font_disabled_color = Color(0, 0, 0, 1)
@@ -73,3 +95,7 @@ Button/styles/focus = SubResource("StyleBoxFlat_tbeor")
 Button/styles/hover = SubResource("StyleBoxFlat_touxu")
 Button/styles/normal = SubResource("StyleBoxFlat_dmjyp")
 Button/styles/pressed = SubResource("StyleBoxFlat_2pn01")
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 4
+Label/styles/label = SubResource("StyleBoxFlat_kek77")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_272bh")

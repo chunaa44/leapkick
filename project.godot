@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Leapkick"
-run/main_scene="uid://ujprcl0oqlpf"
+run/main_scene="uid://d4n1ea23t57pw"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

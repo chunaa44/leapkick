@@ -80,9 +80,7 @@ On the ground: dive button jumps straight up,
 kick button hops backward.
 In the air: kick button dives at an angle.
 Land a dive on your opponent to score.
-Miss and you are stuck for a moment!
-
-Esc = pause"
+Miss and you are stuck for a moment!"
 
 [node name="BackButton" type="Button" parent="CenterContainer/ControlsBox" unique_id=1647297514]
 custom_minimum_size = Vector2(320, 56)
