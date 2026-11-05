@@ -71,9 +71,9 @@ expand_margin_right = 14.0
 expand_margin_bottom = 14.0
 
 [resource]
-Button/colors/font_color = Color(0, 0, 0, 1)
+Button/colors/font_color = Color(1, 0.8509804, 0.3019608, 1)
 Button/colors/font_disabled_color = Color(0, 0, 0, 1)
-Button/colors/font_focus_color = Color(0, 0, 0, 1)
+Button/colors/font_focus_color = Color(1, 0.8509804, 0.3019608, 1)
 Button/colors/font_hover_color = Color(0, 0, 0, 1)
 Button/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
