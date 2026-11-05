@@ -15,6 +15,9 @@ func _physics_process(delta):
 	if round_active == false:
 		return
 
+	$Player1.face_towards($Player2.global_position.x)
+	$Player2.face_towards($Player1.global_position.x)
+
 	var p1_was_hit = false
 	var p2_was_hit = false
 
