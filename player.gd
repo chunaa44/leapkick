@@ -162,6 +162,7 @@ func _physics_process(delta):
 		elif dive_pressed:
 			# jump straight up
 			velocity.y = jump_y
+			Sfx.play("jump")
 		elif kick_pressed:
 			# hop backward
 			velocity.x = -back_hop_x * facing
@@ -172,6 +173,7 @@ func _physics_process(delta):
 			is_diving = true
 			velocity.x = dive_x * facing
 			velocity.y = dive_y
+			Sfx.play("dive")
 		elif is_diving == false:
 			velocity.y += GRAVITY * delta
 

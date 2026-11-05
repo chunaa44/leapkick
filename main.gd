@@ -169,6 +169,7 @@ func end_round(p1_lost, p2_lost, timed_out):
 func play_hit_effects(p1_was_hit, p2_was_hit, big):
 	# screen shake, bigger on the final kill
 	shake = 24.0 if big else 14.0
+	Sfx.play("hit")
 
 	if p1_was_hit:
 		hit_flash($Player1)
