@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://i4q1jxxuwtcr" path="res://main.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://dv73pa7vfws36" path="res://player.gd" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://chu6driiug5u4" path="res://sprites/orig.png" id="2_272bh"]
+[ext_resource type="Texture2D" uid="uid://clecer6jve8kx" path="res://sprites/cloud_pack.png" id="3_kek77"]
 [ext_resource type="Texture2D" uid="uid://c750ogs4bjqh1" path="res://sprites/flying-kick-outline.png" id="4_5vw27"]
 [ext_resource type="Texture2D" uid="uid://cya105k2u5sja" path="res://sprites/jump-outline.png" id="5_kek77"]
 [ext_resource type="Texture2D" uid="uid://c1ak8vpbfwbwb" path="res://sprites/Idle-outline.png" id="6_4c57u"]
@@ -11,6 +12,10 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m3mo6"]
 size = Vector2(1200, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m3mo6"]
+atlas = ExtResource("3_kek77")
+region = Rect2(0, 369.25, 384.5, 59.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_14egd"]
 size = Vector2(40, 80)
@@ -151,6 +156,11 @@ position = Vector2(640, 650)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=524301697]
 shape = SubResource("RectangleShape2D_m3mo6")
+
+[node name="FloorVisual" type="Sprite2D" parent="Floor" unique_id=395193035]
+position = Vector2(-1, 10.999997)
+scale = Vector2(3.3385417, 2.0677965)
+texture = SubResource("AtlasTexture_m3mo6")
 
 [node name="Player1" type="CharacterBody2D" parent="." unique_id=2059047242]
 position = Vector2(400, 600)
@@ -319,12 +329,14 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 
-[node name="MessageLabel" type="Label" parent="HUD/Root/TopBar/HBoxContainer" unique_id=666617545]
+[node name="TimerLabel" type="Label" parent="HUD/Root/TopBar/HBoxContainer" unique_id=666617545]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.8509804, 0.3019608, 1)
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 48
+text = "20
+"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -338,6 +350,56 @@ text = "Striker"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
+
+[node name="BannerLabel" type="Label" parent="HUD/Root" unique_id=1706326815]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 120
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="P1ScorePopup" type="Label" parent="HUD/Root" unique_id=1271588028]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 60.0
+offset_top = 180.0
+offset_right = -927.0
+offset_bottom = 268.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "+1 POINT"
+
+[node name="P2ScorePopup" type="Label" parent="HUD/Root" unique_id=494423188]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 927.0
+offset_top = 180.0
+offset_right = -60.0
+offset_bottom = 268.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "+1 POINT"
+horizontal_alignment = 2
+
+[node name="CenterLine" type="ColorRect" parent="." unique_id=267620553]
+unique_name_in_owner = true
+visible = false
+z_index = -5
+offset_left = 638.0
+offset_right = 642.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(1, 0.2, 0.2, 0.47058824)
 
 [connection signal="pressed" from="HUD/Root/WinScreen/CenterContainer/VBoxContainer/RematchButton" to="." method="_on_rematch_button_pressed"]
 [connection signal="pressed" from="HUD/Root/WinScreen/CenterContainer/VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
