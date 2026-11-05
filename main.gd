@@ -11,6 +11,31 @@ func _ready():
 	process_physics_priority = 1
 	update_score("")
 
+func _input(event):
+	# pick characters between rounds: 1/2/3 for player 1, 7/8/9 for player 2
+	if round_active == false:
+		return
+	if event is InputEventKey and event.pressed and event.echo == false:
+		var changed = true
+		if event.keycode == KEY_1:
+			$Player1.set_character(0)
+		elif event.keycode == KEY_2:
+			$Player1.set_character(1)
+		elif event.keycode == KEY_3:
+			$Player1.set_character(2)
+		elif event.keycode == KEY_7:
+			$Player2.set_character(0)
+		elif event.keycode == KEY_8:
+			$Player2.set_character(1)
+		elif event.keycode == KEY_9:
+			$Player2.set_character(2)
+		else:
+			changed = false
+
+		if changed:
+			# restart the round so nobody is stuck mid-air with new stats
+			start_new_round()
+
 func _physics_process(delta):
 	if round_active == false:
 		return
@@ -70,4 +95,5 @@ func start_new_round():
 	update_score("")
 
 func update_score(message):
-	$ScoreLabel.text = str(score1) + " - " + str(score2) + "\n" + message
+	var names = $Player1.char_name + "  " + str(score1) + " - " + str(score2) + "  " + $Player2.char_name
+	$ScoreLabel.text = names + "\n" + message

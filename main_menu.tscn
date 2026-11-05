@@ -1,0 +1,96 @@
+[gd_scene format=3 uid="uid://d4n1ea23t57pw"]
+
+[ext_resource type="Theme" uid="uid://c0w20vp3l8hbd" path="res://ui_theme.tres" id="1_7vrkn"]
+[ext_resource type="Script" uid="uid://d3k6nkqjbwte6" path="res://main_menu.gd" id="2_fu7sn"]
+
+[node name="MainMenu" type="Control" unique_id=1791505364]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_7vrkn")
+script = ExtResource("2_fu7sn")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1869711361]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05882353, 0.07058824, 0.18039216, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=37058912]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainBox" type="VBoxContainer" parent="CenterContainer" unique_id=2066521433]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="CenterContainer/MainBox" unique_id=458850916]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8509804, 0.3019608, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 120
+text = "LEAPKICK"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CenterContainer/MainBox" unique_id=1397916322]
+layout_mode = 2
+text = "a two-button fighting game"
+horizontal_alignment = 1
+
+[node name="PlayButton" type="Button" parent="CenterContainer/MainBox" unique_id=916449124]
+custom_minimum_size = Vector2(320, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Play"
+
+[node name="ControlsButton" type="Button" parent="CenterContainer/MainBox" unique_id=1886582298]
+custom_minimum_size = Vector2(320, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Controls"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/MainBox" unique_id=931206581]
+custom_minimum_size = Vector2(320, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Quit"
+
+[node name="ControlsBox" type="VBoxContainer" parent="CenterContainer" unique_id=499857389]
+visible = false
+layout_mode = 2
+
+[node name="ControlsText" type="Label" parent="CenterContainer/ControlsBox" unique_id=726486482]
+layout_mode = 2
+text = "Player 1:  A = dive button,  S = kick button
+Player 2:  K = dive button,  L = kick button
+
+On the ground: dive button jumps straight up,
+kick button hops backward.
+In the air: kick button dives at an angle.
+Land a dive on your opponent to score.
+Miss and you are stuck for a moment!
+
+Esc = pause"
+
+[node name="BackButton" type="Button" parent="CenterContainer/ControlsBox" unique_id=1647297514]
+custom_minimum_size = Vector2(320, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Back"
+
+[connection signal="pressed" from="CenterContainer/MainBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MainBox/ControlsButton" to="." method="_on_controls_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MainBox/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="CenterContainer/ControlsBox/BackButton" to="." method="_on_back_button_pressed"]
